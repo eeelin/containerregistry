@@ -301,11 +301,19 @@ class Transport(object):
         'scope': self._Scope(),
         'service': self._service,
     }
+
+    if '?' in self._realm:
+      url = '{realm}&{query}'.format(
+              realm=self._realm,
+              query=six.moves.urllib.parse.urlencode(parameters))
+    else:
+      url = '{realm}?{query}'.format(
+              realm=self._realm,
+              query=six.moves.urllib.parse.urlencode(parameters))
+
     resp, content = self._transport.request(
         # 'realm' includes scheme and path
-        '{realm}?{query}'.format(
-            realm=self._realm,
-            query=six.moves.urllib.parse.urlencode(parameters)),
+        url,
         'GET',
         body=None,
         headers=headers)
